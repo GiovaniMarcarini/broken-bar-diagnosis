@@ -6,7 +6,7 @@ All experiments are based on an open-access dataset from **IEEE DataPort**.
 
 ---
 
-## 📌 Project Workflow
+## Project Workflow
 
 1. Convert the raw `.mat` files to `.npy`.
 2. Preprocess the data with windowing and class balancing.
@@ -15,7 +15,7 @@ All experiments are based on an open-access dataset from **IEEE DataPort**.
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ├── 01_convert_ieee_mat_to_npy.py # Converts MATLAB files to NumPy format
 ├── 02_split_train_test_sets.py # Creates overlapping windows and splits data
@@ -30,7 +30,7 @@ Editar
 
 ---
 
-## 🧩 Requirements
+## Requirements
 
 Install the required dependencies:
 
@@ -43,10 +43,10 @@ matplotlib, scikit-learn
 
 torch, fastai, timeseriesAI
 
-📊 Dataset Description
+Dataset Description
 We use the publicly available dataset from IEEE DataPort:
 
-🔗 Experimental Database for Detecting and Diagnosing Rotor Broken Bar in Three-Phase Induction Motors
+Experimental Database for Detecting and Diagnosing Rotor Broken Bar in Three-Phase Induction Motors
 
 Key features:
 
@@ -60,7 +60,7 @@ Synchronized electrical (current) and mechanical sensors
 
 Current sampled at high frequency across 18-second recordings
 
-🧹 Step-by-Step Pipeline
+Step-by-Step Pipeline
 1. Convert .mat Files to .npy
 bash
 Copiar
@@ -114,7 +114,7 @@ Trained for 10 epochs using fit_one_cycle
 
 Fixed learning rate: 1e-3
 
-📈 Evaluation Metrics
+Evaluation Metrics
 The following metrics are computed using scikit-learn:
 
 Accuracy
@@ -132,26 +132,3 @@ Cohen’s Kappa
 Classification Report
 
 Normalized Confusion Matrix
-
-🧠 Example: Confusion Matrix (LSTM)
-✅ Tip: Ensure all axis labels and text in the confusion matrix figure are fully legible and in English, with font size matching the document text.
-
-python
-Copiar
-Editar
-plt.xticks(fontsize=14, rotation=45)
-plt.yticks(fontsize=14)
-plt.xlabel("Predicted Class", fontsize=16)
-plt.ylabel("True Class", fontsize=16)
-plt.title("Normalized Confusion Matrix", fontsize=18)
-📌 (Insert image here)
-/figures/confusion_matrix_lstm.png
-
-🔬 Highlights
-All models trained with identical preprocessing and split strategy
-
-InceptionTime performed best in terms of robustness and scalability
-
-High classification accuracy with minimal overfitting
-
-Results demonstrate that MCSA + Deep Learning can effectively detect rotor faults
