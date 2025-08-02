@@ -35,7 +35,6 @@ Editar
 Install the required dependencies:
 
 ```bash
-pip install -r requirements.txt
 Essential libraries:
 
 numpy, pandas, scipy
