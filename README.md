@@ -56,9 +56,75 @@ Key features:
     -  Focuses on phase A current (Ia).
     -  Optionally generates:
     -  Noisy versions of the signals using AWGN with different SNR levels.
-    - Missing-data versions with randomly zeroed samples (simulating data gaps).
+    -  Missing-data versions with randomly zeroed samples (simulating data gaps).
 
+  2. Split into Training and Test Sets
+    -  Extracts fixed-length segments from the current signals
+      -  Typical example: segments of 217 samples (~2 cycles at 60 Hz)
+    -  Uses a sliding window with stride = 10
+    -  Increases the number of available samples while preserving temporal structure
+    -  Applies oversampling to balance underrepresented classes
+    -  Saves the resulting arrays in a format compatible with the deep learning models
 
+  3. Load the Data
+    -  Loads the preprocessed .npy files (clean and, optionally, corrupted)
+    -  Organizes the data into the format:
+        (n_samples, n_timesteps, n_features)
 
+  4. Train the Models
+    -  All training scripts use:
+    -  The timeseriesAI library built on top of fastai
+    -  Batch standardization with TSStandardize
+    -  TSClassification for label handling
+    -  fit_one_cycle as the training policy
+    -  10 epochs of training
+    -  Fixed maximum learning rate: 1e-3
+     
+  A unified training configuration (same learning rate, number of epochs, and preprocessing) is used for all three models to ensure a fair and reproducible comparison.
 
+## Evaluation Metrics
 
+The following metrics are computed using scikit-learn:
+  -  Accuracy
+  -  Precision (weighted)
+  -  Recall (weighted)
+  -  F1-score (weighted)
+  -  Balanced Accuracy
+  -  Cohen’s Kappa
+  -  Classification Report (per class)
+  -  Normalized Confusion Matrix
+These metrics are used both for the clean test set and for the perturbed test sets (with noise and missing data).
+
+## Robustness Evaluation: Noise and Missing Data
+
+In addition to the evaluation on clean signals, the models are tested under controlled degradations to simulate realistic industrial scenarios.
+
+1. Additive Noise (AWGN)
+  Additive White Gaussian Noise is injected into the test signals at different Signal-to-Noise Ratios (SNR):
+    -  SNR = 30 dB → low noise
+    -  SNR = 20 dB → moderate noise
+    -  SNR = 10 dB → strong noise
+    -  SNR = 0 dB → severe noise
+  The training data remain clean, and only the test set is corrupted, which allows evaluating the generalization robustness of the classifiers.
+
+2. Missing Data Simulation
+  To emulate sensor dropouts or acquisition failures, missing data are simulated by randomly zeroing samples in the test segments:
+    -  10% missing → mild corruption
+    -  30% missing → moderate corruption
+    -  50% missing → severe corruption
+  This corresponds to a Missing Completely At Random (MCAR) mechanism and stresses the ability of each model to handle incomplete temporal information.
+
+3. Metrics Under Perturbations
+  For each combination of:
+    -  Model (LSTM, TST, InceptionTime)
+    -  Noise level (SNR)
+    -  Missing rate (% of zeroed samples)
+
+the script computes:
+  -  Accuracy
+  -  Weighted F1-score
+  -  Weighted Precision and Recall
+  -  Balanced Accuracy
+  -  Cohen’s Kappa
+  -  Full classification report
+  -  Normalized confusion matrix
